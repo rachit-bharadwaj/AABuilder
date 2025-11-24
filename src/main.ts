@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'node:path';
+import * as fs from 'fs';
 import started from 'electron-squirrel-startup';
 import { BuildAutomator, BuildConfig } from './BuildAutomator';
 
@@ -115,6 +116,181 @@ ipcMain.handle('build:apk', async (_event, config: BuildConfig) => {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
     };
+  }
+});
+
+// Project Management
+const getProjectsDirectory = (): string => {
+  const userDataPath = app.getPath('userData');
+  const projectsDir = path.join(userDataPath, 'projects');
+  if (!fs.existsSync(projectsDir)) {
+    fs.mkdirSync(projectsDir, { recursive: true });
+  }
+  return projectsDir;
+};
+
+interface ProjectData extends BuildConfig {
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+ipcMain.handle('project:list', async () => {
+  try {
+    console.log('[Main] project:list called');
+    const projectsDir = getProjectsDirectory();
+    console.log('[Main] Projects directory:', projectsDir);
+    
+    if (!fs.existsSync(projectsDir)) {
+      console.log('[Main] Projects directory does not exist, creating...');
+      fs.mkdirSync(projectsDir, { recursive: true });
+    }
+    
+    const files = fs.readdirSync(projectsDir).filter(f => f.endsWith('.json'));
+    console.log('[Main] Found', files.length, 'project files:', files);
+    
+    const projects = files.map(file => {
+      const filePath = path.join(projectsDir, file);
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      return {
+        id: path.basename(file, '.json'),
+        name: data.name || path.basename(file, '.json'),
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      };
+    });
+    
+    console.log('[Main] Returning', projects.length, 'projects');
+    return { success: true, projects: projects.sort((a, b) => 
+      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    ) };
+  } catch (error) {
+    console.error('[Main] Error listing projects:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+ipcMain.handle('project:load', async (_event, projectId: string) => {
+  try {
+    const projectsDir = getProjectsDirectory();
+    const filePath = path.join(projectsDir, `${projectId}.json`);
+    if (!fs.existsSync(filePath)) {
+      return { success: false, error: 'Project not found' };
+    }
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    // Remove metadata fields
+    const { name: _name, createdAt: _createdAt, updatedAt: _updatedAt, ...config } = data;
+    return { success: true, config };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+ipcMain.handle('project:save', async (_event, projectName: string, config: BuildConfig) => {
+  try {
+    console.log('[Main] project:save called with name:', projectName);
+    const projectsDir = getProjectsDirectory();
+    console.log('[Main] Projects directory:', projectsDir);
+    const projectId = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    console.log('[Main] Generated project ID:', projectId);
+    const filePath = path.join(projectsDir, `${projectId}.json`);
+    console.log('[Main] File path:', filePath);
+    
+    const projectData: ProjectData = {
+      ...config,
+      name: projectName,
+      createdAt: fs.existsSync(filePath) 
+        ? JSON.parse(fs.readFileSync(filePath, 'utf-8')).createdAt 
+        : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    console.log('[Main] Writing project data to file...');
+    fs.writeFileSync(filePath, JSON.stringify(projectData, null, 2), 'utf-8');
+    console.log('[Main] Project saved successfully');
+    
+    // Verify file was created
+    if (fs.existsSync(filePath)) {
+      console.log('[Main] File verified to exist');
+    } else {
+      console.error('[Main] ERROR: File was not created!');
+    }
+    
+    return { success: true, projectId };
+  } catch (error) {
+    console.error('[Main] Error saving project:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+ipcMain.handle('project:delete', async (_event, projectId: string) => {
+  try {
+    const projectsDir = getProjectsDirectory();
+    const filePath = path.join(projectsDir, `${projectId}.json`);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      return { success: true };
+    }
+    return { success: false, error: 'Project not found' };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+ipcMain.handle('project:saveAs', async (_event, projectName: string, config: BuildConfig) => {
+  if (!mainWindow) return { success: false, error: 'Window not available' };
+  
+  try {
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Save Project',
+      defaultPath: `${projectName}.json`,
+      filters: [
+        { name: 'JSON Files', extensions: ['json'] },
+        { name: 'All Files', extensions: ['*'] },
+      ],
+    });
+
+    if (result.canceled || !result.filePath) {
+      return { success: false, error: 'Save cancelled' };
+    }
+
+    const projectData: ProjectData = {
+      ...config,
+      name: projectName,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    fs.writeFileSync(result.filePath, JSON.stringify(projectData, null, 2), 'utf-8');
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+ipcMain.handle('project:loadFromFile', async (_event) => {
+  if (!mainWindow) return { success: false, error: 'Window not available' };
+  
+  try {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Load Project',
+      filters: [
+        { name: 'JSON Files', extensions: ['json'] },
+        { name: 'All Files', extensions: ['*'] },
+      ],
+      properties: ['openFile'],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { success: false, error: 'Load cancelled' };
+    }
+
+    const filePath = result.filePaths[0];
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const { name, createdAt: _createdAt, updatedAt: _updatedAt, ...config } = data;
+    return { success: true, config, name: name || path.basename(filePath, '.json') };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 });
 

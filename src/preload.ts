@@ -22,4 +22,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // Remove listeners
   removeAllListeners: (channel: string) => ipcRenderer.removeAllListeners(channel),
+  
+  // Project management
+  projectList: () => ipcRenderer.invoke('project:list'),
+  projectLoad: (projectId: string) => ipcRenderer.invoke('project:load', projectId),
+  projectSave: (projectName: string, config: any) => ipcRenderer.invoke('project:save', projectName, config),
+  projectDelete: (projectId: string) => ipcRenderer.invoke('project:delete', projectId),
+  projectSaveAs: (projectName: string, config: any) => ipcRenderer.invoke('project:saveAs', projectName, config),
+  projectLoadFromFile: () => ipcRenderer.invoke('project:loadFromFile'),
 });

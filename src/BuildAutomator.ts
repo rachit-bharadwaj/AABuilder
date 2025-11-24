@@ -29,7 +29,7 @@ export type ProgressCallback = (message: string, type: 'info' | 'success' | 'err
 export class BuildAutomator {
   private progressCallback?: ProgressCallback;
   private buildProcess?: ChildProcess;
-  private isBuilding: boolean = false;
+  private isBuilding = false;
 
   setProgressCallback(callback: ProgressCallback) {
     this.progressCallback = callback;
@@ -41,7 +41,7 @@ export class BuildAutomator {
     }
   }
 
-  private async validateConfig(config: BuildConfig, requireKeystore: boolean = false): Promise<boolean> {
+  private async validateConfig(config: BuildConfig, requireKeystore = false): Promise<boolean> {
     // Validate project path
     if (!config.projectPath || !fs.existsSync(config.projectPath)) {
       this.log('Error: Project path does not exist', 'error');
@@ -359,7 +359,7 @@ export class BuildAutomator {
     }
     
     const possiblePaths = [
-      'C:\\Program Files\\React Native Build Automator\\bundletool.jar',
+      'C:\\Program Files\\AABuilder\\bundletool.jar',
       path.join(process.resourcesPath || __dirname, 'bundletool.jar'),
       path.join(__dirname, 'bundletool.jar'),
       path.join(appRoot, 'bundletool.jar'), // Project root (where package.json is)
@@ -483,7 +483,7 @@ export class BuildAutomator {
       if (!bundletoolPath) {
         this.log('Error: bundletool.jar not found. Please ensure it is installed.', 'error');
         this.log('Expected locations:', 'info');
-        this.log('  - C:\\Program Files\\React Native Build Automator\\bundletool.jar', 'info');
+        this.log('  - C:\\Program Files\\AABuilder\\bundletool.jar', 'info');
         this.log('  - Same directory as executable', 'info');
         return null;
       }
