@@ -1,22 +1,36 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import { BuildAutomator, BuildConfig } from './BuildAutomator';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
+let mainWindow: BrowserWindow | null = null;
+let buildAutomator: BuildAutomator | null = null;
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
     minWidth: 1000,
     minHeight: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
     },
+  });
+
+  // Initialize BuildAutomator
+  buildAutomator = new BuildAutomator();
+  buildAutomator.setProgressCallback((message, type) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('build:progress', { message, type });
+    }
   });
 
   // and load the index.html of the app.
@@ -28,9 +42,81 @@ const createWindow = () => {
     );
   }
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Open the DevTools in development
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.webContents.openDevTools();
+  }
 };
+
+// IPC Handlers
+ipcMain.handle('dialog:selectDirectory', async (_event, title: string) => {
+  if (!mainWindow) return null;
+  
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: title || 'Select Directory',
+    properties: ['openDirectory'],
+  });
+
+  if (result.canceled) {
+    return null;
+  }
+
+  return result.filePaths[0];
+});
+
+ipcMain.handle('dialog:selectFile', async (_event, title: string, filters: { name: string; extensions: string[] }[]) => {
+  if (!mainWindow) return null;
+  
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: title || 'Select File',
+    properties: ['openFile'],
+    filters: filters || [],
+  });
+
+  if (result.canceled) {
+    return null;
+  }
+
+  return result.filePaths[0];
+});
+
+ipcMain.handle('build:aab', async (_event, config: BuildConfig) => {
+  if (!buildAutomator) {
+    return { success: false, error: 'BuildAutomator not initialized' };
+  }
+
+  try {
+    const result = await buildAutomator.buildAAB(config);
+    return {
+      success: result !== null,
+      path: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+});
+
+ipcMain.handle('build:apk', async (_event, config: BuildConfig) => {
+  if (!buildAutomator) {
+    return { success: false, error: 'BuildAutomator not initialized' };
+  }
+
+  try {
+    const result = await buildAutomator.buildAPK(config);
+    return {
+      success: result !== null,
+      path: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

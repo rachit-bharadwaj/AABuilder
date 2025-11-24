@@ -1,8 +1,8 @@
 {
   "name": "aabuilder-electron",
-  "productName": "aabuilder-electron",
+  "productName": "React Native Build Automator",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Desktop application that automates building Android App Bundles (AAB) and Android Package (APK) files from React Native Expo projects",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
