@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" id="saveProjectBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-medium cursor-pointer">
               💾 Save Project
             </button>
+            <button type="button" id="updateProjectBtn" class="px-4 py-2 bg-green-500/80 hover:bg-green-500 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer hidden">
+              ✏️ Update Project
+            </button>
+            <button type="button" id="undoChangesBtn" class="px-4 py-2 bg-orange-500/80 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer hidden">
+              ↶ Undo Changes
+            </button>
             <button type="button" id="loadProjectBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-medium cursor-pointer">
               📂 Load Project
             </button>
@@ -475,13 +481,59 @@ function setupEventListeners() {
   });
 
   // Project Management
+  let currentProjectId: string | null = null;
+  let currentProjectName: string | null = null;
+  let originalConfig: BuildConfig | null = null; // Store original loaded config for undo
+  
   const projectModal = document.getElementById('projectModal');
   const closeProjectModal = document.getElementById('closeProjectModal');
   const saveProjectBtn = document.getElementById('saveProjectBtn');
+  const updateProjectBtn = document.getElementById('updateProjectBtn');
+  const undoChangesBtn = document.getElementById('undoChangesBtn');
   const loadProjectBtn = document.getElementById('loadProjectBtn');
   const loadFromFileBtn = document.getElementById('loadFromFileBtn');
   const saveAsFileBtn = document.getElementById('saveAsFileBtn');
   const projectList = document.getElementById('projectList');
+
+  function updateProjectButtons() {
+    if (currentProjectId) {
+      // Project is loaded, show Update and Undo buttons
+      if (saveProjectBtn) saveProjectBtn.classList.add('hidden');
+      if (updateProjectBtn) {
+        updateProjectBtn.classList.remove('hidden');
+        updateProjectBtn.textContent = `✏️ Update "${currentProjectName || 'Project'}"`;
+      }
+      if (undoChangesBtn) undoChangesBtn.classList.remove('hidden');
+    } else {
+      // No project loaded, show Save button
+      if (saveProjectBtn) saveProjectBtn.classList.remove('hidden');
+      if (updateProjectBtn) updateProjectBtn.classList.add('hidden');
+      if (undoChangesBtn) undoChangesBtn.classList.add('hidden');
+    }
+  }
+
+  function applyConfigToForm(config: BuildConfig) {
+    (document.getElementById('projectPath') as HTMLInputElement).value = config.projectPath || '';
+    (document.getElementById('outputPath') as HTMLInputElement).value = config.outputPath || '';
+    (document.getElementById('keystore') as HTMLInputElement).value = config.keystorePath || '';
+    (document.getElementById('keystorePassword') as HTMLInputElement).value = config.keystorePassword || '';
+    (document.getElementById('keyAlias') as HTMLInputElement).value = config.keyAlias || '';
+    (document.getElementById('keyPassword') as HTMLInputElement).value = config.keyPassword || '';
+    (document.getElementById('outputName') as HTMLInputElement).value = config.outputFileName || '';
+    (document.getElementById('buildMode') as HTMLSelectElement).value = config.buildMode || 'release';
+    (document.getElementById('cleanBuild') as HTMLInputElement).checked = config.cleanBuild || false;
+    validateInputs();
+  }
+
+  function undoChanges() {
+    if (!originalConfig) {
+      addLog('No original configuration to restore', 'error');
+      return;
+    }
+
+    applyConfigToForm(originalConfig);
+    addLog('Changes undone - restored to original project values', 'success');
+  }
 
   function showProjectModal() {
     if (projectModal) {
@@ -572,24 +624,63 @@ function setupEventListeners() {
       const result = await window.electronAPI.projectLoad(projectId);
       if (result.success && result.config) {
         const config = result.config;
-        (document.getElementById('projectPath') as HTMLInputElement).value = config.projectPath || '';
-        (document.getElementById('outputPath') as HTMLInputElement).value = config.outputPath || '';
-        (document.getElementById('keystore') as HTMLInputElement).value = config.keystorePath || '';
-        (document.getElementById('keystorePassword') as HTMLInputElement).value = config.keystorePassword || '';
-        (document.getElementById('keyAlias') as HTMLInputElement).value = config.keyAlias || '';
-        (document.getElementById('keyPassword') as HTMLInputElement).value = config.keyPassword || '';
-        (document.getElementById('outputName') as HTMLInputElement).value = config.outputFileName || '';
-        (document.getElementById('buildMode') as HTMLSelectElement).value = config.buildMode || 'release';
-        (document.getElementById('cleanBuild') as HTMLInputElement).checked = config.cleanBuild || false;
         
-        validateInputs();
+        // Store original config for undo functionality
+        originalConfig = { ...config };
+        
+        // Apply config to form
+        applyConfigToForm(config);
+        
+        // Track loaded project
+        currentProjectId = projectId;
+        // Get project name from the list
+        const listResult = await window.electronAPI.projectList();
+        if (listResult.success && listResult.projects) {
+          const project = listResult.projects.find(p => p.id === projectId);
+          currentProjectName = project?.name || null;
+        }
+        
+        updateProjectButtons();
         hideProjectModal();
-        addLog(`Project loaded successfully`, 'success');
+        addLog(`Project "${currentProjectName || projectId}" loaded successfully`, 'success');
       } else {
         addLog(`Failed to load project: ${result.error}`, 'error');
       }
     } catch (error) {
       addLog(`Error loading project: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+    }
+  }
+
+  async function updateCurrentProject() {
+    if (!currentProjectId || !currentProjectName) {
+      addLog('No project loaded to update', 'error');
+      return;
+    }
+
+    if (!window.electronAPI) {
+      addLog('Error: electronAPI not available', 'error');
+      return;
+    }
+
+    try {
+      const config = getBuildConfig();
+      console.log('Updating project:', currentProjectId, 'with name:', currentProjectName);
+      const result = await window.electronAPI.projectSave(currentProjectName, config);
+      
+      if (result && result.success) {
+        // Update original config to current state after successful update
+        originalConfig = { ...config };
+        addLog(`Project "${currentProjectName}" updated successfully`, 'success');
+        if (projectModal && !projectModal.classList.contains('hidden')) {
+          loadProjects();
+        }
+      } else {
+        const errorMsg = result?.error || 'Unknown error';
+        addLog(`Failed to update project: ${errorMsg}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+      addLog(`Error updating project: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
     }
   }
 
@@ -674,6 +765,13 @@ function setupEventListeners() {
       console.log('projectSave result:', result);
       
       if (result && result.success) {
+        // Track the newly saved project
+        currentProjectId = result.projectId || null;
+        currentProjectName = projectName;
+        // Store current config as original for undo
+        originalConfig = { ...config };
+        updateProjectButtons();
+        
         addLog(`Project "${projectName}" saved successfully`, 'success');
         console.log('Project saved successfully');
         if (projectModal && !projectModal.classList.contains('hidden')) {
@@ -716,8 +814,14 @@ function setupEventListeners() {
       }
     }, 1000);
   }
+  saveProjectBtn?.addEventListener('click', saveCurrentProject);
+  updateProjectBtn?.addEventListener('click', updateCurrentProject);
+  undoChangesBtn?.addEventListener('click', undoChanges);
   loadProjectBtn?.addEventListener('click', showProjectModal);
   closeProjectModal?.addEventListener('click', hideProjectModal);
+
+  // Initialize button states
+  updateProjectButtons();
 
   loadFromFileBtn?.addEventListener('click', async () => {
     try {
@@ -734,7 +838,14 @@ function setupEventListeners() {
         (document.getElementById('buildMode') as HTMLSelectElement).value = config.buildMode || 'release';
         (document.getElementById('cleanBuild') as HTMLInputElement).checked = config.cleanBuild || false;
         
-        validateInputs();
+        // Store original config for undo (file-based projects)
+        originalConfig = { ...config };
+        
+        // Clear current project tracking (file-based projects aren't tracked)
+        currentProjectId = null;
+        currentProjectName = null;
+        updateProjectButtons();
+        
         hideProjectModal();
         addLog(`Project "${result.name || 'Unknown'}" loaded from file`, 'success');
       } else {
