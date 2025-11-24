@@ -349,21 +349,21 @@ export class BuildAutomator {
   }
 
   private async findBundletool(): Promise<string | null> {
-    // Get the app's root directory (where package.json is)
-    let appRoot: string;
-    try {
-      // In Electron, app.getAppPath() returns the directory containing the app
-      appRoot = (app && typeof app.getAppPath === 'function') ? app.getAppPath() : process.cwd();
-    } catch {
-      appRoot = process.cwd();
-    }
+    // In packaged Electron apps, extra resources are in process.resourcesPath
+    // In development, they're in the project root
     
     const possiblePaths = [
+      // Packaged app location (resources folder - where extraResource files are placed)
+      path.join(process.resourcesPath || '', 'bundletool.jar'),
+      // Development location (project root)
+      path.join(__dirname, '..', '..', 'bundletool.jar'),
+      path.join(__dirname, '..', 'bundletool.jar'),
+      // Program Files location (for manual installation)
       'C:\\Program Files\\AABuilder\\bundletool.jar',
-      path.join(process.resourcesPath || __dirname, 'bundletool.jar'),
-      path.join(__dirname, 'bundletool.jar'),
-      path.join(appRoot, 'bundletool.jar'), // Project root (where package.json is)
-      path.join(process.cwd(), 'bundletool.jar'), // Current working directory
+      // Current working directory
+      path.join(process.cwd(), 'bundletool.jar'),
+      // App path location
+      path.join(app?.getAppPath() || process.cwd(), 'bundletool.jar'),
     ];
 
     for (const bundletoolPath of possiblePaths) {

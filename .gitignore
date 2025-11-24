@@ -90,3 +90,13 @@ typings/
 
 # Electron-Forge
 out/
+
+# Code signing certificates (NEVER commit these!)
+*.pfx
+*.p12
+*.cer
+*.crt
+*.key
+certificate.pfx
+*.pem
+signing/

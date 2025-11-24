@@ -10,10 +10,34 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // Include bundletool.jar as an extra resource
+    extraResource: [
+      'bundletool.jar',
+    ],
+    // Set executable name
+    executableName: 'AABuilder',
+    // Code signing configuration (uses environment variables)
+    win32metadata: {
+      CompanyName: 'Rachit Bharadwaj',
+      FileDescription: 'AABuilder - React Native Build Automator',
+      OriginalFilename: 'AABuilder.exe',
+      ProductName: 'AABuilder',
+    },
+    // Windows code signing (only if certificate path is provided)
+    ...(process.env.WINDOWS_SIGNING_CERT_PATH ? {
+      windowsSign: {
+        signWithParams: `/a /f "${process.env.WINDOWS_SIGNING_CERT_PATH}" /p "${process.env.WINDOWS_SIGNING_CERT_PASSWORD || ''}" /tr http://timestamp.digicert.com /td sha256`,
+      },
+    } : {}),
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      name: 'AABuilder',
+      setupExe: 'AABuilder-Setup.exe',
+      setupIcon: undefined, // You can add an icon file path here if you have one
+      loadingGif: undefined, // You can add a loading gif for installer
+    }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({}),
