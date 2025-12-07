@@ -40,84 +40,107 @@ interface BuildConfig {
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.body;
   app.innerHTML = `
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <!-- Title Bar -->
-      <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-xl">
-        <div class="px-6 py-5 flex items-center justify-between">
+    <div class="min-h-screen bg-gray-50">
+      <!-- Professional Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="px-8 py-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <h1 class="text-3xl font-bold tracking-tight">AABuilder</h1>
+            <div>
+              <h1 class="text-2xl font-semibold text-gray-900 tracking-tight">AABuilder</h1>
+              <p class="text-xs text-gray-500 font-normal">React Native Build Automator</p>
+            </div>
           </div>
-          <div class="flex gap-2">
-            <button type="button" id="saveProjectBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-medium cursor-pointer">
-              💾 Save Project
+          <div class="flex items-center gap-2">
+            <button type="button" id="saveProjectBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-all text-sm font-medium cursor-pointer flex items-center gap-2 border border-gray-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+              </svg>
+              Save Project
             </button>
-            <button type="button" id="updateProjectBtn" class="px-4 py-2 bg-green-500/80 hover:bg-green-500 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer hidden">
-              ✏️ Update Project
+            <button type="button" id="updateProjectBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all text-sm font-medium cursor-pointer flex items-center gap-2 shadow-sm hidden">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              <span>Update Project</span>
             </button>
-            <button type="button" id="undoChangesBtn" class="px-4 py-2 bg-orange-500/80 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer hidden">
-              ↶ Undo Changes
+            <button type="button" id="undoChangesBtn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-all text-sm font-medium cursor-pointer flex items-center gap-2 shadow-sm hidden">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+              </svg>
+              Undo Changes
             </button>
-            <button type="button" id="loadProjectBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-medium cursor-pointer">
-              📂 Load Project
+            <button type="button" id="loadProjectBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-all text-sm font-medium cursor-pointer flex items-center gap-2 border border-gray-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+              </svg>
+              Load Project
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
       <!-- Project Name Input Modal -->
-      <div id="projectNameModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-          <h3 class="text-xl font-bold text-gray-800 mb-4">Save Project</h3>
-          <input 
-            type="text" 
-            id="projectNameInput"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none mb-4"
-            placeholder="Enter project name..."
-            autofocus
-          />
-          <div class="flex gap-3">
-            <button 
-              id="confirmSaveProject"
-              class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium"
-            >
-              Save
-            </button>
+      <div id="projectNameModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-md w-full border border-gray-200">
+          <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Save Project</h3>
+            <p class="text-sm text-gray-500 mt-1">Enter a name for this project configuration</p>
+          </div>
+          <div class="px-6 py-5">
+            <input 
+              type="text" 
+              id="projectNameInput"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              placeholder="Enter project name..."
+              autofocus
+            />
+          </div>
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex gap-3 justify-end rounded-b-lg">
             <button 
               id="cancelSaveProject"
-              class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors font-medium"
+              class="px-4 py-2 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md transition-colors text-sm font-medium"
             >
               Cancel
+            </button>
+            <button 
+              id="confirmSaveProject"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium shadow-sm"
+            >
+              Save
             </button>
           </div>
         </div>
       </div>
 
       <!-- Project Management Modal -->
-      <div id="projectModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-          <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-gray-800">Project Management</h2>
-            <button id="closeProjectModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div id="projectModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col border border-gray-200">
+          <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">Project Management</h2>
+              <p class="text-sm text-gray-500 mt-0.5">Load or manage saved project configurations</p>
+            </div>
+            <button id="closeProjectModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
           <div class="flex-1 overflow-y-auto p-6">
-            <div id="projectList" class="space-y-2">
+            <div id="projectList" class="space-y-3">
               <!-- Projects will be loaded here -->
             </div>
           </div>
-          <div class="px-6 py-4 border-t border-gray-200 flex gap-2">
-            <button id="loadFromFileBtn" class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
+          <div class="px-6 py-4 border-t border-gray-200 flex gap-3 bg-gray-50">
+            <button id="loadFromFileBtn" class="flex-1 px-4 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-md transition-colors text-sm font-medium">
               Load from File
             </button>
-            <button id="saveAsFileBtn" class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium">
+            <button id="saveAsFileBtn" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium shadow-sm">
               Save As File
             </button>
           </div>
@@ -125,127 +148,180 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <!-- Main Content -->
-      <div class="container mx-auto px-6 py-6 max-w-7xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Left Column -->
-          <div class="space-y-6">
-            <!-- Project Configuration -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-200/50">
-              <h2 class="text-xl font-bold text-gray-800 mb-5 pb-3 border-b-2 border-indigo-200 flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="container mx-auto px-8 py-8 max-w-[1600px]">
+        <div class="space-y-6">
+          <!-- Project Configuration - Full Width -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+              <div class="w-8 h-8 bg-blue-50 rounded-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
-                Project Configuration
-              </h2>
-              <div class="space-y-4">
-                <!-- Project Path -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Project Path *</label>
-                  <div class="flex gap-2">
-                    <input 
-                      type="text" 
-                      id="projectPath"
-                      class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Select project path..."
-                    />
-                    <button 
-                      id="browseProjectPath"
-                      class="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-lg transition-all border border-indigo-200 hover:border-indigo-300 shadow-sm"
-                    >
-                      Browse
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Output Path -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Output Path *</label>
-                  <div class="flex gap-2">
-                    <input 
-                      type="text" 
-                      id="outputPath"
-                      class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Select output path..."
-                    />
-                    <button 
-                      id="browseOutputPath"
-                      class="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-lg transition-all border border-indigo-200 hover:border-indigo-300 shadow-sm"
-                    >
-                      Browse
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Keystore -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Keystore *</label>
-                  <div class="flex gap-2">
-                    <input 
-                      type="text" 
-                      id="keystore"
-                      class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Select keystore file..."
-                    />
-                    <button 
-                      id="browseKeystore"
-                      class="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-lg transition-all border border-indigo-200 hover:border-indigo-300 shadow-sm"
-                    >
-                      Browse
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Keystore Password -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Keystore Password *</label>
-                  <input 
-                    type="password" 
-                    id="keystorePassword"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Enter keystore password..."
-                  />
-                </div>
-
-                <!-- Key Alias -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Key Alias *</label>
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Project Configuration</h2>
+                <p class="text-xs text-gray-500 font-normal">Configure your React Native project settings</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <!-- Project Path -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Project Path <span class="text-red-500">*</span></label>
+                <div class="flex gap-2">
                   <input 
                     type="text" 
-                    id="keyAlias"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Enter key alias..."
+                    id="projectPath"
+                    class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                    placeholder="Select project path..."
                   />
+                  <button 
+                    id="browseProjectPath"
+                    class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
+                  >
+                    Browse
+                  </button>
                 </div>
+              </div>
 
-                <!-- Key Password -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Key Password *</label>
+              <!-- Output Path -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Output Path <span class="text-red-500">*</span></label>
+                <div class="flex gap-2">
                   <input 
-                    type="password" 
-                    id="keyPassword"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Enter key password..."
+                    type="text" 
+                    id="outputPath"
+                    class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                    placeholder="Select output path..."
                   />
+                  <button 
+                    id="browseOutputPath"
+                    class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
+                  >
+                    Browse
+                  </button>
                 </div>
+              </div>
+
+              <!-- Keystore -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Keystore <span class="text-red-500">*</span></label>
+                <div class="flex gap-2">
+                  <input 
+                    type="text" 
+                    id="keystore"
+                    class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                    placeholder="Select keystore file..."
+                  />
+                  <button 
+                    id="browseKeystore"
+                    class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
+                  >
+                    Browse
+                  </button>
+                </div>
+              </div>
+
+              <!-- Keystore Password -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Keystore Password <span class="text-red-500">*</span></label>
+                <input 
+                  type="password" 
+                  id="keystorePassword"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                  placeholder="Enter keystore password..."
+                />
+              </div>
+
+              <!-- Key Alias -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Key Alias <span class="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  id="keyAlias"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                  placeholder="Enter key alias..."
+                />
+              </div>
+
+              <!-- Key Password -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Key Password <span class="text-red-500">*</span></label>
+                <input 
+                  type="password" 
+                  id="keyPassword"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
+                  placeholder="Enter key password..."
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Build Actions and Build Options - Side by Side -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Build Actions -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+                <div class="w-8 h-8 bg-green-50 rounded-md flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Build Actions</h2>
+                  <p class="text-xs text-gray-500 font-normal">Generate AAB or APK files</p>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <button 
+                  id="buildAAB"
+                  class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600 flex items-center justify-center gap-2"
+                  disabled
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Build AAB
+                </button>
+                <button 
+                  id="buildAPK"
+                  class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 flex items-center justify-center gap-2"
+                  disabled
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                  Build APK
+                </button>
+                <button 
+                  id="clearLog"
+                  class="w-full px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm"
+                >
+                  Clear Log
+                </button>
               </div>
             </div>
 
             <!-- Build Options -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-200/50">
-              <h2 class="text-xl font-bold text-gray-800 mb-5 pb-3 border-b-2 border-purple-200 flex items-center gap-2">
-                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                Build Options
-              </h2>
-              <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+                <div class="w-8 h-8 bg-purple-50 rounded-md flex items-center justify-center">
+                  <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Build Options</h2>
+                  <p class="text-xs text-gray-500 font-normal">Configure build settings and preferences</p>
+                </div>
+              </div>
+              <div class="space-y-5">
                 <!-- Build Mode -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">Build Mode</label>
                   <select 
                     id="buildMode"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white"
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white text-sm text-gray-900"
                   >
                     <option value="release" selected>Release</option>
                     <option value="debug">Debug</option>
@@ -257,20 +333,20 @@ document.addEventListener('DOMContentLoaded', () => {
                   <input 
                     type="checkbox" 
                     id="cleanBuild"
-                    class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                   />
                   <label for="cleanBuild" class="ml-3 text-sm font-medium text-gray-700">
-                    Clean build
+                    Clean build before compiling
                   </label>
                 </div>
 
                 <!-- Output Name -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Output Name (Optional)</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Output Name <span class="text-gray-400 font-normal">(Optional)</span></label>
                   <input 
                     type="text" 
                     id="outputName"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
                     placeholder="Auto-generated if empty"
                   />
                 </div>
@@ -278,66 +354,30 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Right Column -->
-          <div class="space-y-6">
-            <!-- Build Actions -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-200/50">
-              <h2 class="text-xl font-bold text-gray-800 mb-5 pb-3 border-b-2 border-pink-200 flex items-center gap-2">
-                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                Build Actions
-              </h2>
-              <div class="space-y-3">
-                <button 
-                  id="buildAAB"
-                  class="w-full px-6 py-4 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
-                  disabled
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  Build AAB
-                </button>
-                <button 
-                  id="buildAPK"
-                  class="w-full px-6 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
-                  disabled
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                  </svg>
-                  Build APK
-                </button>
-                <button 
-                  id="clearLog"
-                  class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all border border-gray-300 hover:border-gray-400 shadow-sm"
-                >
-                  Clear Log
-                </button>
-              </div>
-            </div>
-
-            <!-- Build Log -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-200/50 flex flex-col h-full">
-              <h2 class="text-xl font-bold text-gray-800 mb-4 pb-3 border-b-2 border-gray-200 flex items-center gap-2">
+          <!-- Build Log - Full Width -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
+              <div class="w-8 h-8 bg-gray-50 rounded-md flex items-center justify-center">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Build Log
-              </h2>
-              <!-- Progress Bar -->
-              <div id="progressBarContainer" class="mb-4 hidden">
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div id="progressBar" class="bg-purple-600 h-2.5 rounded-full animate-pulse" style="width: 100%"></div>
-                </div>
               </div>
-              <div 
-                id="buildLog"
-                class="flex-1 bg-gray-900 text-green-400 font-mono text-sm p-4 rounded-lg overflow-y-auto min-h-[400px] max-h-[600px]"
-              >
-                <div class="text-gray-400">Ready to build. Please configure your project settings.</div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900">Build Log</h2>
+                <p class="text-xs text-gray-500 font-normal">Real-time build output and messages</p>
               </div>
+            </div>
+            <!-- Progress Bar -->
+            <div id="progressBarContainer" class="mb-4 hidden">
+              <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                <div id="progressBar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 100%"></div>
+              </div>
+            </div>
+            <div 
+              id="buildLog"
+              class="flex-1 bg-gray-900 text-gray-300 font-mono text-xs p-4 rounded-md overflow-y-auto min-h-[400px] max-h-[600px] border border-gray-800"
+            >
+              <div class="text-gray-500">Ready to build. Please configure your project settings.</div>
             </div>
           </div>
         </div>
@@ -501,7 +541,10 @@ function setupEventListeners() {
       if (saveProjectBtn) saveProjectBtn.classList.add('hidden');
       if (updateProjectBtn) {
         updateProjectBtn.classList.remove('hidden');
-        updateProjectBtn.textContent = `✏️ Update "${currentProjectName || 'Project'}"`;
+        const textSpan = updateProjectBtn.querySelector('span');
+        if (textSpan) {
+          textSpan.textContent = `Update "${currentProjectName || 'Project'}"`;
+        }
       }
       if (undoChangesBtn) undoChangesBtn.classList.remove('hidden');
     } else {
@@ -558,27 +601,29 @@ function setupEventListeners() {
       if (result.success && result.projects) {
         if (result.projects.length === 0) {
           projectList.innerHTML = `
-            <div class="text-center py-8 text-gray-500">
-              <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
-              <p>No saved projects yet</p>
-              <p class="text-sm mt-2">Save your current configuration to get started</p>
+            <div class="text-center py-12">
+              <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <p class="text-sm font-medium text-gray-900">No saved projects</p>
+              <p class="text-xs text-gray-500 mt-1">Save your current configuration to get started</p>
             </div>
           `;
         } else {
           projectList.innerHTML = result.projects.map(project => `
-            <div class="bg-gray-50 hover:bg-gray-100 rounded-lg p-4 border border-gray-200 transition-all cursor-pointer group" data-project-id="${project.id}">
+            <div class="bg-white hover:bg-gray-50 rounded-md p-4 border border-gray-200 transition-all group" data-project-id="${project.id}">
               <div class="flex items-center justify-between">
-                <div class="flex-1">
-                  <h3 class="font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors">${project.name}</h3>
-                  <p class="text-sm text-gray-500 mt-1">Updated: ${new Date(project.updatedAt).toLocaleString()}</p>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-medium text-gray-900 truncate">${project.name}</h3>
+                  <p class="text-xs text-gray-500 mt-1">Last updated: ${new Date(project.updatedAt).toLocaleString()}</p>
                 </div>
-                <div class="flex gap-2">
-                  <button class="load-project-btn px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors" data-project-id="${project.id}">
+                <div class="flex gap-2 ml-4">
+                  <button class="load-project-btn px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors shadow-sm" data-project-id="${project.id}">
                     Load
                   </button>
-                  <button class="delete-project-btn px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition-colors" data-project-id="${project.id}">
+                  <button class="delete-project-btn px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors shadow-sm" data-project-id="${project.id}">
                     Delete
                   </button>
                 </div>
