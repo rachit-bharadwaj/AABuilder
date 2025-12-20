@@ -348,6 +348,35 @@ export class BuildAutomator {
     }
   }
 
+  private async checkJavaAvailable(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const javaCheck = spawn('java', ['-version'], {
+        shell: false,
+      });
+
+      javaCheck.on('error', () => {
+        resolve(false);
+      });
+
+      javaCheck.on('close', (code) => {
+        // Java -version returns non-zero exit code but still outputs version info
+        // So we check if the process ran at all (not an error)
+        resolve(true);
+      });
+
+      javaCheck.stderr?.on('data', () => {
+        // Java outputs version to stderr, so receiving data means Java is installed
+        resolve(true);
+      });
+
+      // Timeout after 3 seconds
+      setTimeout(() => {
+        javaCheck.kill();
+        resolve(false);
+      }, 3000);
+    });
+  }
+
   private async findBundletool(): Promise<string | null> {
     // In packaged Electron apps, extra resources are in process.resourcesPath
     // In development, they're in the project root
@@ -477,7 +506,18 @@ export class BuildAutomator {
         return null;
       }
 
-      // Step 2: Find bundletool
+      // Step 2: Check if Java is available
+      this.log('Checking for Java Runtime Environment...', 'info');
+      const javaAvailable = await this.checkJavaAvailable();
+      if (!javaAvailable) {
+        this.log('Error: Java Runtime Environment (JRE) is not installed or not in PATH.', 'error');
+        this.log('Please install Java from: https://www.java.com/download/', 'error');
+        this.log('After installing Java, restart AABuilder and try again.', 'error');
+        return null;
+      }
+      this.log('Java Runtime Environment found', 'success');
+
+      // Step 3: Find bundletool
       this.log('Locating bundletool...', 'info');
       const bundletoolPath = await this.findBundletool();
       if (!bundletoolPath) {

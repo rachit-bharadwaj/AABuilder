@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- Main Content -->
       <div class="container mx-auto px-8 py-8 max-w-[1600px]">
-        <div class="space-y-6">
+          <div class="space-y-6">
           <!-- Project Configuration - Full Width -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
@@ -164,95 +164,95 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <!-- Project Path -->
-              <div>
+                <!-- Project Path -->
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Project Path <span class="text-red-500">*</span></label>
-                <div class="flex gap-2">
-                  <input 
-                    type="text" 
-                    id="projectPath"
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      id="projectPath"
                     class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
-                    placeholder="Select project path..."
-                  />
-                  <button 
-                    id="browseProjectPath"
+                      placeholder="Select project path..."
+                    />
+                    <button 
+                      id="browseProjectPath"
                     class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
-                  >
-                    Browse
-                  </button>
+                    >
+                      Browse
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Output Path -->
-              <div>
+                <!-- Output Path -->
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Output Path <span class="text-red-500">*</span></label>
-                <div class="flex gap-2">
-                  <input 
-                    type="text" 
-                    id="outputPath"
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      id="outputPath"
                     class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
-                    placeholder="Select output path..."
-                  />
-                  <button 
-                    id="browseOutputPath"
+                      placeholder="Select output path..."
+                    />
+                    <button 
+                      id="browseOutputPath"
                     class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
-                  >
-                    Browse
-                  </button>
+                    >
+                      Browse
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Keystore -->
-              <div>
+                <!-- Keystore -->
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Keystore <span class="text-red-500">*</span></label>
-                <div class="flex gap-2">
-                  <input 
-                    type="text" 
-                    id="keystore"
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      id="keystore"
                     class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
-                    placeholder="Select keystore file..."
-                  />
-                  <button 
-                    id="browseKeystore"
+                      placeholder="Select keystore file..."
+                    />
+                    <button 
+                      id="browseKeystore"
                     class="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition-all border border-gray-300 hover:border-gray-400 text-sm whitespace-nowrap"
-                  >
-                    Browse
-                  </button>
+                    >
+                      Browse
+                    </button>
+                  </div>
                 </div>
-              </div>
 
               <!-- Keystore Password -->
-              <div>
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Keystore Password <span class="text-red-500">*</span></label>
-                <input 
-                  type="password" 
+                  <input 
+                    type="password" 
                   id="keystorePassword"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
                   placeholder="Enter keystore password..."
-                />
-              </div>
+                  />
+                </div>
 
               <!-- Key Alias -->
-              <div>
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Key Alias <span class="text-red-500">*</span></label>
-                <input 
-                  type="text" 
+                  <input 
+                    type="text" 
                   id="keyAlias"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
                   placeholder="Enter key alias..."
-                />
-              </div>
+                  />
+                </div>
 
-              <!-- Key Password -->
-              <div>
+                <!-- Key Password -->
+                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Key Password <span class="text-red-500">*</span></label>
-                <input 
-                  type="password" 
-                  id="keyPassword"
+                  <input 
+                    type="password" 
+                    id="keyPassword"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-sm text-gray-900 placeholder-gray-400"
-                  placeholder="Enter key password..."
-                />
-              </div>
+                    placeholder="Enter key password..."
+                  />
+                </div>
             </div>
           </div>
 
