@@ -78,7 +78,7 @@
 
 ### Main Interface
 
-<img src="/public/images/main-interface.png" alt="AABuilder Main Interface" width="800"/>
+<img src="/public/images/main-screen.png" alt="AABuilder Main Interface" width="800"/>
 
 _Clean and intuitive interface for configuring your React Native builds_
 
