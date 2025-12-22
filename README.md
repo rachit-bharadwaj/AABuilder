@@ -78,13 +78,13 @@
 
 ### Main Interface
 
-<img src="https://via.placeholder.com/800x500/1e293b/60a5fa?text=AABuilder+Main+Interface" alt="AABuilder Main Interface" width="800"/>
+<img src="/public/images/main-interface.png" alt="AABuilder Main Interface" width="800"/>
 
 _Clean and intuitive interface for configuring your React Native builds_
 
 ### Build in Progress
 
-<img src="https://via.placeholder.com/800x300/1e293b/10b981?text=Real-time+Build+Logs" alt="Build Progress" width="800"/>
+<img src="/public/images/build.png" alt="Build Progress" width="800"/>
 
 _Real-time build logs with color-coded messages for easy monitoring_
 
