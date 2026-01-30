@@ -15,6 +15,11 @@
   <strong>A powerful desktop application that automates building Android App Bundles (AAB) and Android Package (APK) files from React Native projects</strong>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Windows-Supported-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
+  <img src="https://img.shields.io/badge/Linux-Debian%20%7C%20Ubuntu-Supported-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux"/>
+</p>
+
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Prerequisites](#-prerequisites) • [Building](#-building-from-source) • [Contributing](#-contributing)
 
 </div>
@@ -132,9 +137,15 @@ Before using AABuilder, ensure you have the following installed:
 ### Option 1: Download Pre-built Binary (Recommended)
 
 1. Go to the [Releases](https://github.com/rachit-bharadwaj/AABuilder-Electron/releases) page
-2. Download the latest `AABuilder-Setup.exe` for Windows
-3. Run the installer
-4. Launch AABuilder from your Start Menu or Desktop
+2. Download the installer for your platform:
+   - **Windows**: `AABuilder-Setup.exe`
+   - **Linux (Debian/Ubuntu)**: `aabuilder-electron_1.0.0_amd64.deb`
+3. **Windows**: Run the installer, then launch AABuilder from your Start Menu or Desktop
+4. **Linux**: Install the .deb package and launch from your application menu:
+   ```bash
+   sudo dpkg -i aabuilder-electron_*_amd64.deb
+   sudo apt-get install -f   # if dependencies are missing
+   ```
 
 ### Option 2: Build from Source
 
@@ -147,7 +158,8 @@ See the [Building from Source](#-building-from-source) section below.
 ### Quick Start Guide
 
 1. **Launch AABuilder**
-   - Open the application from your Start Menu or Desktop
+   - **Windows**: Open from your Start Menu or Desktop
+   - **Linux**: Open from your application menu (e.g. **AABuilder** or **aabuilder-electron**)
 
 2. **Configure Your Project**
 
@@ -212,7 +224,8 @@ See the [Building from Source](#-building-from-source) section below.
 The root directory of your React Native project (must contain `package.json`).
 
 ```
-Example: C:\Users\YourName\Projects\MyReactNativeApp
+Windows: C:\Users\YourName\Projects\MyReactNativeApp
+Linux:   /home/username/projects/MyReactNativeApp
 ```
 
 ### Output Path
@@ -220,7 +233,8 @@ Example: C:\Users\YourName\Projects\MyReactNativeApp
 Directory where generated AAB/APK files will be saved.
 
 ```
-Example: C:\Users\YourName\Desktop\Builds
+Windows: C:\Users\YourName\Desktop\Builds
+Linux:   /home/username/Desktop/Builds
 ```
 
 ### Keystore Configuration
@@ -284,17 +298,26 @@ npm start
 npm run make:win
 ```
 
-**All Platforms:**
+**Linux (Debian/Ubuntu):**
+
+```bash
+npm run make:linux
+```
+
+(Requires `dpkg` and `fakeroot`: `sudo apt-get install dpkg fakeroot`)
+
+**All platforms (from respective OS):**
 
 ```bash
 npm run make
 ```
 
-The installer will be generated in:
+**Output locations:**
 
-```
-out/make/squirrel.windows/x64/AABuilder-Setup.exe
-```
+| Platform | Output path |
+| -------- | ----------- |
+| Windows  | `out/make/squirrel.windows/x64/AABuilder-Setup.exe` |
+| Linux    | `out/make/deb/x64/aabuilder-electron_1.0.0_amd64.deb` |
 
 ---
 
@@ -334,13 +357,14 @@ aabuilder-electron/
 
 ## 📝 Scripts
 
-| Command            | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `npm start`        | Start the application in development mode         |
-| `npm run package`  | Package the application (no installer)            |
-| `npm run make`     | Create distributable installers for all platforms |
-| `npm run make:win` | Create Windows installer only                     |
-| `npm run lint`     | Run ESLint for code quality                       |
+| Command              | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `npm start`          | Start the application in development mode         |
+| `npm run package`    | Package the application (no installer)            |
+| `npm run make`       | Create distributable installers for current platform |
+| `npm run make:win`   | Create Windows installer only                     |
+| `npm run make:linux` | Create Linux (.deb) package for Debian/Ubuntu     |
+| `npm run lint`       | Run ESLint for code quality                       |
 
 ---
 
@@ -358,7 +382,8 @@ aabuilder-electron/
 
 1. Download `bundletool.jar` from https://github.com/google/bundletool/releases
 2. Place it in the same directory as the AABuilder executable
-3. Or place it in: `C:\Program Files\AABuilder\`
+3. **Windows**: Or place it in `C:\Program Files\AABuilder\`
+4. **Linux**: Or place it in the app’s `resources` directory (e.g. `/usr/lib/aabuilder-electron/resources/`)
 
 #### ❌ "Project path must contain package.json"
 
@@ -391,7 +416,7 @@ aabuilder-electron/
 ## 🗺️ Roadmap
 
 - [ ] **macOS Support** - Build for macOS platform
-- [ ] **Linux Support** - Native Linux builds
+- [x] **Linux Support** - Native Linux builds (Debian/Ubuntu .deb)
 - [ ] **iOS Build Support** - Add iOS build capabilities
 - [ ] **Build History** - Track and manage previous builds
 - [ ] **Batch Building** - Build multiple projects at once
