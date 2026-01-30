@@ -17,7 +17,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Windows-Supported-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
-  <img src="https://img.shields.io/badge/Linux-Debian%20%7C%20Ubuntu-Supported-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux"/>
+  <img src="https://img.shields.io/badge/Linux-Supported-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux (Debian/Ubuntu)"/>
 </p>
 
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Prerequisites](#-prerequisites) • [Building](#-building-from-source) • [Contributing](#-contributing)
