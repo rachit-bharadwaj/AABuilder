@@ -14,8 +14,8 @@ const config: ForgeConfig = {
     extraResource: [
       'bundletool.jar',
     ],
-    // Set executable name
-    executableName: 'AABuilder',
+    // Set executable name (use package name so Linux .deb maker finds the binary)
+    executableName: 'aabuilder-electron',
     // Code signing configuration (uses environment variables)
     win32metadata: {
       CompanyName: 'Rachit Bharadwaj',

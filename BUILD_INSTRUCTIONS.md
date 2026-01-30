@@ -1,65 +1,102 @@
 # Building AABuilder for Distribution
 
-This guide explains how to build a distributable Windows installer (.exe) for AABuilder.
+This guide explains how to build distributable installers for AABuilder on Windows and Linux (Debian).
 
 ## Prerequisites
 
 1. **Node.js** (v16 or higher) and npm installed
-2. **Windows** (for building Windows installers)
+2. **Target OS** (Windows for .exe, Linux for .deb)
 3. All dependencies installed: `npm install`
-
-## Building the Installer
 
 ### Step 1: Ensure bundletool.jar is in the project root
 
 Make sure `bundletool.jar` is present in the root directory of the project (same level as `package.json`).
 
-### Step 2: Build the Windows Installer
+---
 
-Run the following command to create a Windows installer:
+## Building for Linux (Debian)
+
+### Requirements
+
+- Linux (Debian, Ubuntu, or similar)
+- `dpkg` and `fakeroot` (for building .deb):
+
+  ```bash
+  sudo apt-get install dpkg fakeroot
+  ```
+
+### Build the .deb package
+
+From the project root:
 
 ```bash
-npm run make:win
+npm run make:linux
 ```
 
-Or to build for all platforms:
+Or:
 
 ```bash
 npm run make
 ```
 
-### Step 3: Find the Installer
+### Output location
 
-After building, the installer will be located at:
+The Debian package will be at:
+
+```
+out/make/deb/x64/aabuilder-electron_1.0.0_amd64.deb
+```
+
+### Install on Debian/Ubuntu
+
+```bash
+sudo dpkg -i out/make/deb/x64/aabuilder-electron_1.0.0_amd64.deb
+```
+
+If dependencies are missing, run:
+
+```bash
+sudo apt-get install -f
+```
+
+### What's included (Linux)
+
+- AABuilder application
+- bundletool.jar (in app resources)
+- Dependencies packaged for .deb
+
+---
+
+## Building for Windows
+
+### Build the Windows installer
+
+```bash
+npm run make:win
+```
+
+Or to build for the current platform:
+
+```bash
+npm run make
+```
+
+### Output location
 
 ```
 out/make/squirrel.windows/x64/AABuilder-Setup.exe
 ```
 
-## What Gets Included
+### What's included (Windows)
 
-The installer includes:
-- ✅ AABuilder application executable
-- ✅ bundletool.jar (automatically bundled)
-- ✅ All required dependencies
-- ✅ Windows installer with automatic setup
+- AABuilder application executable
+- bundletool.jar (automatically bundled)
+- Windows installer (Squirrel)
 
-## Distribution
+---
 
-You can share the `AABuilder-Setup.exe` file with anyone. When they run it:
-1. It will install AABuilder to their system
-2. bundletool.jar will be automatically placed in the correct location
-3. The application will be ready to use
+## General notes
 
-## Installation Location
-
-By default, the installer places the application in:
-- **User's AppData folder** (for per-user installation)
-- The `bundletool.jar` will be in the `resources` folder alongside the executable
-
-## Notes
-
-- The installer is unsigned by default. For production distribution, consider code signing.
-- The first run may take a moment as Windows may show a security warning (this is normal for unsigned executables).
-- Users will need Java Runtime Environment (JRE) installed on their system for bundletool to work.
-
+- Installers are **unsigned** by default. For production, consider code signing.
+- **Java Runtime Environment (JRE)** must be installed on the target machine for bundletool to work.
+- On Windows, the first run may show a security warning for unsigned executables.
